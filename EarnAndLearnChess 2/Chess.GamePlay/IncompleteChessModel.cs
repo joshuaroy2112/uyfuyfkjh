@@ -224,25 +224,25 @@ namespace Chess.GamePlay
 
         public bool IsInCheck(char[][] board, Player player)
         {
-            int[] kingPosition = FindKingPosition(board, player);
-            Player opponent = player == Player.White ? Player.Black : Player.White;
+            int[] kingPosition = FindKingPosition(board, player); //calling function which finds king position
+            Player opponent = player == Player.White ? Player.Black : Player.White; //opponent switch
 
             for (int i = 0; i < board.Length; i++)
             {
-                for (int j = 0; j < board[i].Length; j++)
+                for (int j = 0; j < board[i].Length; j++) //iterating through entire board
                 {
-                    if (board[i][j] != '.' && IsPieceOwnedByPlayer(board[i][j], opponent))
+                    if (board[i][j] != '.' && IsPieceOwnedByPlayer(board[i][j], opponent)) //if space is occupied and owned by opposing team - 
                     {
-                        if (IsMoveLegal(board, new Move(i, j, kingPosition[0], kingPosition[1]), opponent)) return true;
+                        if (IsMoveLegal(board, new Move(i, j, kingPosition[0], kingPosition[1]), opponent)) return true; //is the move is legal then the king is in check
                     }
                 }
             }
-            return false;
+            return false; //otherwise not in check
         }
 
         public bool IsMoveIntoCheck(char[][] board, Move move, Player player)
         {
-            char[][] boardCopy = (char[][])board.Clone();
+            char[][] boardCopy = (char[][])board.Clone(); //thanks sam for Clone() method to clone board
             for (int rows = 0; rows < board.Length; rows++)
             {
                 boardCopy[rows] = new char[board[rows].Length];
@@ -252,13 +252,13 @@ namespace Chess.GamePlay
                 }
             }
 
-            boardCopy[move.toRow][move.toColumn] = boardCopy[move.fromRow][move.toColumn];
-            boardCopy[move.fromRow][move.fromColumn] = '.';
+            boardCopy[move.toRow][move.toColumn] = boardCopy[move.fromRow][move.fromColumn];
+            boardCopy[move.fromRow][move.fromColumn] = '.'; //copying board
 
             if (IsInCheck(boardCopy, player))
             {
                 return true;
-            }
+            } //if the next move puts the game into check then that move is in check
 
             return false;
 
@@ -266,22 +266,35 @@ namespace Chess.GamePlay
 
         public bool IsGameOver(char[][] board, Player player)
         {
-            Player opponent = player == Player.White ? Player.Black : Player.White;
+            int[] kingPosition = new int[2]; //using king finder function
 
-            if (IsInCheck(board, opponent))
+            if (IsInCheck(board, player))
             {
-                int[] kingPosition = FindKingPosition(board, player);
+                for (int i = 0; i < board.Length; i++)
+                {
+                    for (int j = 0; j < board[i].Length; j++)
+                    {
+                        if (IsPieceOwnedByPlayer(board[i][j], player)) //iterating through all possible pieces
+                        {
+                            if (IsMoveLegal(board, new Move(i, j, kingPosition[0], kingPosition[1]), player) && !IsMoveIntoCheck(board, new Move(i, j, kingPosition[0], kingPosition[1]), player))
+                            { //if the move is legal but does not put the game into check then the game isnt over
+                                return false;
+                            }
 
+                        }
 
+                    }
+                }
+
+                return true; //otherwise the game is over
             }
-            
-            return false; 
+            return false; //game is over
         }
         public int[] FindKingPosition(char[][] board, Player player)
         {
             int[] kingPosition = new int[2];
 
-            GridCharacter targetPiece = player == Player.White ? GridCharacter.WhiteKing : GridCharacter.BlackKing;
+            GridCharacter targetPiece = player == Player.White ? GridCharacter.WhiteKing : GridCharacter.BlackKing; //taken from original IsGameOver()
 
             // Search for the correct king (targetPiece).
             for (int i = 0; i < board.Length; i++)
