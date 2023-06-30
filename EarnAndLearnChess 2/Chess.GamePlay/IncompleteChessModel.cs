@@ -225,18 +225,15 @@ namespace Chess.GamePlay
         public bool IsInCheck(char[][] board, Player player)
         {
             int[] kingPosition = FindKingPosition(board, player);
+            Player opponent = player == Player.White ? Player.Black : Player.White;
 
             for (int i = 0; i < board.Length; i++)
             {
-                for (int j = 0; j < board.Length; j++)
+                for (int j = 0; j < board[i].Length; j++)
                 {
-                    if (board[i][j] != '.' && !IsPieceOwnedByPlayer(board[i][j], Player.White))
+                    if (board[i][j] != '.' && IsPieceOwnedByPlayer(board[i][j], opponent))
                     {
-                        if (IsPieceMoveLegal(board, new Move(i, j, kingPosition[0], kingPosition[1]), Player.Black)) return true;
-                    }
-                    if (board[i][j] != '.' && !IsPieceOwnedByPlayer(board[i][j], Player.Black))
-                    {
-                        if (IsPieceMoveLegal(board, new Move(i, j, kingPosition[0], kingPosition[1]), Player.White)) return true;
+                        if (IsPieceMoveLegal(board, new Move(i, j, kingPosition[0], kingPosition[1]), opponent)) return true;
                     }
                 }
             }
