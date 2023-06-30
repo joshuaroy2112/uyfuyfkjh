@@ -276,7 +276,8 @@ namespace Chess.GamePlay
                     {
                         if (IsPieceOwnedByPlayer(board[i][j], player)) //iterating through all possible pieces
                         {
-                            if (IsMoveLegal(board, new Move(i, j, kingPosition[0], kingPosition[1]), player) && !IsMoveIntoCheck(board, new Move(i, j, kingPosition[0], kingPosition[1]), player))
+                            Move move = new Move(i, j, kingPosition[0], kingPosition[1]);
+                            if (IsMoveLegal(board, move, player) && !IsMoveIntoCheck(board, move, player))
                             { //if the move is legal but does not put the game into check then the game isnt over
                                 return false;
                             }
