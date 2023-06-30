@@ -233,7 +233,7 @@ namespace Chess.GamePlay
                 {
                     if (board[i][j] != '.' && IsPieceOwnedByPlayer(board[i][j], opponent))
                     {
-                        if (IsPieceMoveLegal(board, new Move(i, j, kingPosition[0], kingPosition[1]), opponent)) return true;
+                        if (IsMoveLegal(board, new Move(i, j, kingPosition[0], kingPosition[1]), opponent)) return true;
                     }
                 }
             }
@@ -270,14 +270,16 @@ namespace Chess.GamePlay
 
             if (IsInCheck(board, opponent))
             {
-                return true;
+                int[] kingPosition = FindKingPosition(board, player);
+
+
             }
             
             return false; 
         }
         public int[] FindKingPosition(char[][] board, Player player)
         {
-            int[] kingPosition = new int[board.Length];
+            int[] kingPosition = new int[2];
 
             GridCharacter targetPiece = player == Player.White ? GridCharacter.WhiteKing : GridCharacter.BlackKing;
 
@@ -288,6 +290,8 @@ namespace Chess.GamePlay
                 {
                     if (board[i][j] == (char)targetPiece)
                     {
+                        kingPosition[0] = i;
+                        kingPosition[1] = j;
                         return kingPosition;
                     }
                 }
